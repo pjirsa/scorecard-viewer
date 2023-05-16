@@ -1,0 +1,36 @@
+﻿@inject HttpClient Http
+@using BlazorApp.Shared
+
+<table>
+    <tbody>
+        @foreach (var image in images)
+        {
+            <tr>
+                <td>@image</td>
+                <td><img src="@image" alt="scorecard image" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public int? WeekId { get; set; }
+
+    Scorecard[] images = new Scorecard[] { };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        
+
+        try
+        {
+            images = await Http.GetFromJsonAsync<Scorecard[]>($"/api/getScorecards/{WeekId}") ?? new Scorecard[] { };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+    
+}
