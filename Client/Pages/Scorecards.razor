@@ -1,11 +1,12 @@
-﻿@page "/scorecards"
+﻿@page "/scorecards/{Id:int}"
 
 <PageTitle>Scorecards</PageTitle>
 
-<h3>Week 1</h3>
-<ScorecardList WeekId="1" />
+<h3>Week @Id</h3>
+<ScorecardList WeekId="@Id" />
 
 
 @code {
-    
+    [Parameter]
+    public int Id { get; set; }
 }
