@@ -6,8 +6,8 @@
         @foreach (var image in images)
         {
             <tr>
-                <td>@image</td>
-                <td><img src="@image" alt="scorecard image" /></td>
+                <td>@image.Filename</td>
+                <td><img width="800" src="@image.ShareLinkWebUrl" alt="scorecard image" /></td>
             </tr>
         }
     </tbody>

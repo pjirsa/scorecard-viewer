@@ -5,9 +5,12 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage" Version="5.0.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.10.0" OutputItemType="Analyzer" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.14.1" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.6.3" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
