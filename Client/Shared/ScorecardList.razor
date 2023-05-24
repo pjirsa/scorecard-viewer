@@ -1,19 +1,28 @@
 ﻿@inject HttpClient Http
 @using BlazorApp.Shared
 
-<table>
+@if (loading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table>
     <tbody>
         @foreach (var image in images)
-        {
-            <tr>
-                <td>@image.Filename</td>
-                <td><img width="800" src="@image.ShareLinkWebUrl" alt="scorecard image" /></td>
-            </tr>
-        }
-    </tbody>
-</table>
+            {
+                <tr>
+                    <td>@image.Filename</td>
+                    <td><img width="800" src="@image.ShareLinkWebUrl" alt="scorecard image" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
+    private bool loading = true;
+
     [Parameter]
     public int? WeekId { get; set; }
 
@@ -21,8 +30,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        
-
         try
         {
             images = await Http.GetFromJsonAsync<Scorecard[]>($"/api/getScorecards/{WeekId}") ?? new Scorecard[] { };
@@ -31,6 +38,10 @@
         {
             Console.WriteLine(ex.ToString());
         }
+        finally
+        {
+            loading = false;
+        }
     }
-    
+
 }

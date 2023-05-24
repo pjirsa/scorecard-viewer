@@ -49,5 +49,20 @@ namespace Api
 
             return response;
         }
+
+        [Function("GetWeeks")]
+        public async Task<HttpResponseData> GetWeeks([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ListWeeks")] HttpRequestData req)
+        {            
+            var result = new List<Week>();
+            result.Add(new Week { WeekId = 1, DisplayName = "Week 1"});
+            result.Add(new Week { WeekId = 2, DisplayName = "Week 2"});
+            result.Add(new Week { WeekId = 3, DisplayName = "Week 3"});
+            result.Add(new Week { WeekId = 4, DisplayName = "Week 4"});
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(result);
+
+            return response;
+        }
     }
 }
