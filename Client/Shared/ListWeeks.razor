@@ -1,0 +1,35 @@
+@inject HttpClient Http
+@using BlazorApp.Shared
+
+@if (weeks == null || weeks.Count() == 0)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <nav class="flex-column">
+        @foreach (var i in weeks)
+        {
+        <div class="nav-item px-3">
+            <NavLink href='@($"scorecards/{i.WeekId}")'>@i.DisplayName</NavLink>
+        </div>
+        }        
+    </nav>
+}
+
+@code {
+    private Week[] weeks = new Week[] { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            weeks = await Http.GetFromJsonAsync<Week[]>("/api/ListWeeks") ?? new Week[] { };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
+}
