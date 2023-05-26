@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -21,8 +22,8 @@ namespace Api
             _dbClient = dbClient;
         }
 
-        [Function("ListMatches")]
-        public async Task<HttpResponseData> GetAll([HttpTrigger(AuthorizationLevel.Function, "get", Route = "matches")] HttpRequestData req)
+        [Function("GetAllMatches")]
+        public async Task<HttpResponseData> GetAll([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "matches")] HttpRequestData req)
         {
             _logger.LogInformation("Fetching all matches.");
 
@@ -30,14 +31,14 @@ namespace Api
             var query = new QueryDefinition(
                 query: "SELECT * FROM c"
             );
-            
+
             var results = new List<Match>();
-            
+
             var feed = matchDb.GetItemQueryIterator<Match>(query);
 
             while (feed.HasMoreResults)
             {
-                foreach(var match in await feed.ReadNextAsync())
+                foreach (var match in await feed.ReadNextAsync())
                 {
                     results.Add(match);
                 }
@@ -45,6 +46,40 @@ namespace Api
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(results.OrderBy(m => m.TeeTime));
+
+            return response;
+        }
+
+        [Function("GetMatchesByWeekId")]
+        public async Task<HttpResponseData> GetByWeekId([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "matches/{weekId}")] HttpRequestData req,
+            int weekId)
+        {
+            if (weekId == 0) throw new ArgumentException("weekId must be greater than 0", "weekId");
+
+            _logger.LogInformation($"Fetching matches for week {weekId}");
+
+            // Get the database and container references, then prepare the query statement
+            var matchDb = _dbClient.GetContainer("TuesdayLeague", "Schedule");  // TODO: inject using DI TOptions
+            var query = new QueryDefinition(
+                               query: "SELECT * FROM c WHERE c.WeekId = @weekId"
+                            )
+                .WithParameter("@weekId", weekId);
+
+            // Create an empty list to hold the results
+            var results = new List<Match>();
+
+            // Execute the query and iterate over the results
+            var feed = matchDb.GetItemQueryIterator<Match>(query);
+            while (feed.HasMoreResults)
+            {
+                foreach (var match in await feed.ReadNextAsync())
+                {
+                    results.Add(match);
+                }
+            }
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(results);
 
             return response;
         }
