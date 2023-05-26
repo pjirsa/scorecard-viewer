@@ -17,10 +17,10 @@ namespace Api
         private readonly ILogger _logger;
         private readonly BlobServiceClient _blobService;
 
-        public ScorecardFunction(ILoggerFactory loggerFactory)
+        public ScorecardFunction(ILoggerFactory loggerFactory, BlobServiceClient blobClient)
         {
             _logger = loggerFactory.CreateLogger<ScorecardFunction>();
-            _blobService = new BlobServiceClient(Environment.GetEnvironmentVariable("GalleryStorageConnection"));
+            _blobService = blobClient;
         }
 
         [Function("GetScorecards")]
