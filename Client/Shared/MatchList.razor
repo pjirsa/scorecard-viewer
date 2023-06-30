@@ -7,20 +7,33 @@
 }
 else
 {
-    @foreach (var week in matches)
-    {
-        <div class="card">
-            <div class="card-header"><a class="button" href='@($"scorecards/{week.Key}")'>@week.Value[0].TeeTime.ToShortDateString() - Week @week.Key <span class="oi oi-spreadsheet"></span></a></div>
-            <ul class="list-group list-group-flush">
+    <div class="">Click headings to expand schedule</div>
+    <div class="accordion" id="matchListParent">
+        @foreach (var week in matches)
+        {
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@week.Key" aria-expanded="false" aria-controls="collapse-@week.Key">
+                Week @week.Key - @week.Value[0].TeeTime.ToShortDateString()
+            </button>
+            </h2>
+            <div id="collapse-@week.Key" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                @if (week.Value[0].TeeTime < DateTime.Now)
+                {
+                    <a class="button" href='@($"scorecards/{week.Key}")'><span class="oi oi-spreadsheet"></span> View Scorecards</a>
+                }
                 @foreach (var match in week.Value)
                 {
                     <li class="list-group-item">
                         @match.TeeTime.ToShortTimeString() - @match.Team1 vs @match.Team2
                     </li>
                 }
-            </ul>
+            </div>
+            </div>
         </div>
-    }
+        }        
+    </div>    
 }
 
 
