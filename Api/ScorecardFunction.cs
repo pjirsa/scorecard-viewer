@@ -31,7 +31,7 @@ namespace Api
             var results = new List<Scorecard>();
             var sasBuilder = new BlobSasBuilder(BlobContainerSasPermissions.Read, System.DateTimeOffset.UtcNow.AddHours(8));
 
-            await foreach (BlobItem item in client.GetBlobsAsync(prefix: $"Week{weekId}"))
+            await foreach (BlobItem item in client.GetBlobsAsync(prefix: $"Week{weekId}/"))
             {
                 var blob = client.GetBlobClient(item.Name);
                 results.Add(new Scorecard
